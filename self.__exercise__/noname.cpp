@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include <utility>
 using namespace std;
 
 class balance {
@@ -10,8 +11,7 @@ private:
     int position[15], weight[15];
     void balance_main();
     double get_balance(int);
-    double center_of_weight(int, int);
-    double sum_of_weight(int, int);
+    pair<double, double> get_error(int, double);
 public:
     balance(int trial){
         this->trial = trial;
@@ -37,30 +37,40 @@ void balance::balance_main(){
 
 double balance::get_balance(int pos){
     double bal = double(position[pos]);
-    double tmp, err, Fl, Fr;
-    double minerr, mintmp;
-    for(int i=1;i<=12;++i){
-        minerr = 9999999999.9;
-        for(int j=0;j<=9;++j){
-            tmp = bal + pow(10.0, double(-i)) * j;
-            Fl = Fr = 0.0;
-            for(int k=1;k<=pos;++k){
-                if(tmp != position[k]){
-                    Fl += (double(weight[k]) / ((tmp - position[k]) * (tmp - position[k])));
-                }
-            }
-            for(int k=pos+1;k<=n;++k){
-                Fr += (double(weight[k]) / ((tmp - position[k]) * (tmp - position[k])));
-            }
-            err = Fl - Fr;
-            cout << "tmp: " << tmp << " i:" << i << " j:" << j << " Fl:" << Fl << " Fr:" << Fr << " Err:" << err << '\n';
-            if(abs(err) < minerr){
-                minerr = abs(err);
-                mintmp = tmp;
-            }
+    double tmp, err;
+    pair<double, double> F;
+
+    double Dl, Dr;
+    Dl = position[pos];
+    Dr = position[pos+1];
+    for(int i=1;i<=50;++i){
+        tmp = (Dl + Dr) / 2;
+        //tmp = bal + pow(10.0, double(-i)) * j;
+        //tmp를 이분 탐색으로 구해야 한다.
+        F = get_error(pos, tmp);
+        //cout << "tmp: " << tmp << " Fl:" << F.first << " Fr:" << F.second << " Err:" << err << '\n';
+        if(F.first < F.second){
+            Dr = tmp;
         }
-        bal = mintmp;
+        else{
+            Dl = tmp;
+        }
     }
+    return (Dl + Dr) / 2;
+}
+
+pair<double, double> balance::get_error(int pos, double tmp){
+    double Fl, Fr;
+    Fl = Fr = 0.0;
+    for(int k=1;k<=pos;++k){
+        if(tmp != position[k]){
+            Fl += (double(weight[k]) / ((tmp - position[k]) * (tmp - position[k])));
+        }
+    }
+    for(int k=pos+1;k<=n;++k){
+        Fr += (double(weight[k]) / ((tmp - position[k]) * (tmp - position[k])));
+    }
+    return {Fl, Fr};
 }
 
 int main(){
