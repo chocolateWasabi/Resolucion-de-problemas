@@ -36,49 +36,31 @@ void balance::balance_main(){
 }
 
 double balance::get_balance(int pos){
-    double dv1 = center_of_weight(1, pos);
-    double dv2 = center_of_weight(pos+1, n);
-    double w1 = sum_of_weight(1, pos);
-    double w2 = sum_of_weight(pos+1, n);
-
-    cout << dv1 <<' ' << dv2 << ' ' << w1 << ' ' << w2 << '\n';
-
-
-    double sol1, sol2;
-    
-    if(w1 != w2){
-        sol1 = ((dv2*w1-dv1*w2) + sqrt((dv2*w1-dv1*w2)*(dv2*w1-dv1*w2)-(w1-w2)*(w1*dv2*dv2-w2*dv1*dv1)))/(w1-w2);
-        sol2 = ((dv2*w1-dv1*w2) - sqrt((dv2*w1-dv1*w2)*(dv2*w1-dv1*w2)-(w1-w2)*(w1*dv2*dv2-w2*dv1*dv1)))/(w1-w2);
+    double bal = double(position[pos]);
+    double tmp, err, Fl, Fr;
+    double minerr, mintmp;
+    for(int i=1;i<=12;++i){
+        minerr = 9999999999.9;
+        for(int j=0;j<=9;++j){
+            tmp = bal + pow(10.0, double(-i)) * j;
+            Fl = Fr = 0.0;
+            for(int k=1;k<=pos;++k){
+                if(tmp != position[k]){
+                    Fl += (double(weight[k]) / ((tmp - position[k]) * (tmp - position[k])));
+                }
+            }
+            for(int k=pos+1;k<=n;++k){
+                Fr += (double(weight[k]) / ((tmp - position[k]) * (tmp - position[k])));
+            }
+            err = Fl - Fr;
+            cout << "tmp: " << tmp << " i:" << i << " j:" << j << " Fl:" << Fl << " Fr:" << Fr << " Err:" << err << '\n';
+            if(abs(err) < minerr){
+                minerr = abs(err);
+                mintmp = tmp;
+            }
+        }
+        bal = mintmp;
     }
-    else {
-        sol1 = sol2 = (dv1 + dv2) / 2.0;
-    }
-
-    //cout << sol1 << ' ' << sol2 << '\n';
-    if(sol1 > double(position[pos]) && sol1 < double(position[pos+1])){
-        return sol1;
-    }
-    else {
-        return sol2;
-    }
-}
-
-double balance::center_of_weight(int s, int e){
-    double a, b; // 질량 중심
-    a = b = 0.0;
-    for(int i=s;i<=e;++i){
-        a += double(weight[i]) * position[i];
-        b += double(weight[i]);
-    }
-    return a / b;
-}
-
-double balance::sum_of_weight(int s, int e){
-    double a = 0.0;
-    for(int i=s;i<=e;++i){
-        a += double(weight[i]);
-    }
-    return a;
 }
 
 int main(){
