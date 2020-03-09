@@ -39,3 +39,42 @@ int main(){
     return 0;
 }
 */
+/*
+// BOJ ID 9251 (review)
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int max(int a, int b){
+    return a > b? a: b;
+}
+
+int main(){
+    char dat[2][1001];
+    cin >> dat[0] >> dat[1];
+    int len[2];
+    len[0] = strlen(dat[0]), len[1] = strlen(dat[1]);
+    int crit = len[0] <= len[1]? 0: 1;
+    int check[2][1001];
+    memset(check, 0, sizeof(check));
+    int current_max, flag = 0;
+    for(int i=0;i<len[crit];++i){
+        current_max = 0;
+        flag ^= 1;
+        for(int j=0;j<len[crit^1];++j){
+            if(dat[crit^1][j] == dat[crit][i]){
+                check[flag][j] = max(check[flag^1][j], current_max + 1);
+            }
+            else{
+                check[flag][j] = check[flag^1][j];
+            }
+            current_max = check[flag^1][j] > current_max? check[flag^1][j]: current_max;
+        }
+    }
+    current_max = 0;
+    for(int i=0;i<len[crit^1];++i){
+        current_max = check[flag][i] > current_max? check[flag][i]: current_max;
+    }
+    cout << current_max;
+    return 0;
+}*/
