@@ -1,4 +1,5 @@
-// BOJ ID 15650
+/*
+// BOJ ID 15652
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -13,12 +14,12 @@ void pick(int n, int mtogo, vector<int>& picked){
     }
     int now;
     if(picked.empty() == true){
-        now = 0;
+        now = 1;
     }
     else {
         now = picked.back();
     }
-    for(int i=now+1;i<=n;++i){
+    for(int i=now;i<=n;++i){
         picked.push_back(i);
         pick(n, mtogo-1, picked);
         picked.pop_back();
@@ -32,4 +33,4 @@ int main(){
     cin >> n >> m;
     pick(n, m, picked);
     return 0;
-}
+} */
