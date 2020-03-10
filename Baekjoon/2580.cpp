@@ -31,9 +31,7 @@ void sudoku(int row){
 
     int size = candidate[row].size();
     
-    vector<int> tmp;
-    tmp.clear();
-    for(int i=0;i<size;++i){ tmp.push_back(i); }
+    //vector<int> tmp = candidate[row];
 
     int tti;
     bool test;
@@ -42,7 +40,7 @@ void sudoku(int row){
         test = true;
 
         for(auto i:omit_coord[row]){
-            table[row][i] = candidate[row][tmp[tti]];
+            table[row][i] = candidate[row][tti];
             tti ++;
 
             // verify procedure
@@ -78,7 +76,9 @@ void sudoku(int row){
             table[row][i] = 0;
         }
         
-    }while(next_permutation(tmp.begin(), tmp.end()));
+    }while(next_permutation(candidate[row].begin(), candidate[row].end()));
+
+    //candidate[row] = tmp;
 }
 
 int main(){
