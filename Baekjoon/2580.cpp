@@ -1,84 +1,97 @@
 // BOJ ID 2580 (SUDOKU)
-#include <iostream>
+#include <cstdio>
 #include <vector>
 #include <cstring>
 #include <algorithm>
+//#include <set>
 using namespace std;
 
-bool verify(int (*table)[9]){
-    int sum1, sum2;
-    int blocksum[9];
-    memset(blocksum, 0, sizeof(blocksum));
-    //cout << "verifying";
+int table[9][9];
+vector<vector<int>> candidate(9);
+vector<vector<int>> omit_coord(9);
+//set<int> check_y[9], check_block[9];
+
+int check_y[9][10], check_block[9][10];
+// 9개의 열, 9개의 블록, 각 열과 블록마다 0부터 9까지의 수
+
+inline void print_table(){
     for(int i=0;i<9;++i){
-        sum1 = sum2 = 0;
         for(int j=0;j<9;++j){
-            sum1 += table[i][j];
-            sum2 += table[j][i];
-
-            blocksum[3*(i/3)+j/3] += table[i][j];
+            printf("%d ", table[i][j]);
         }
-        if(sum1 != 45) return false;
-        if(sum2 != 45) return false;
+        printf("\n");
     }
-    for(int i=0;i<9;++i){
-        if(blocksum[i] != 45) return false;
-    }
-    return true;
 }
 
-int factorial(int n){
-    int result = 1;
-    for(;n>0;--n){
-        result *= n;
-    }
-    return result;
-}
-
-void sudoku(int row, int (*table)[9], vector<vector<int>>& candidate, vector<vector<int>>& omit_coord, bool& finish){
+void sudoku(int row){
     if(row == 9){
-        finish = verify(table);
-        if(finish){
-            for(int i=0;i<9;++i){
-                for(int j=0;j<9;++j){
-                    cout << table[i][j] << ' ';
-                }
-                cout << '\n';
-            }
-        }
-        return;
+        print_table();
+        exit(0);
     }
-    if(!finish){
-        int size = omit_coord[row].size();
-        int fact = factorial(size);
-        int tmp[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-        for(;fact>0;--fact){
-            int tti = 0;
-            for(auto i:omit_coord[row]){
-                table[row][i] = candidate[row][tmp[tti]];
-                tti ++;
-            }
 
-            sudoku(row+1, table, candidate, omit_coord, finish);
-            if(finish){
+    int size = candidate[row].size();
+    
+    vector<int> tmp;
+    tmp.clear();
+    for(int i=0;i<size;++i){ tmp.push_back(i); }
+
+    int tti;
+    bool test;
+    do{
+        tti = 0;
+        test = true;
+
+        for(auto i:omit_coord[row]){
+            table[row][i] = candidate[row][tmp[tti]];
+            tti ++;
+
+            // verify procedure
+
+            if(check_y[i][table[row][i]] != 0){
+                test = false;
                 break;
             }
-            next_permutation(tmp, tmp+size);
+
+            if(check_block[3*(row/3)+(i/3)][table[row][i]] != 0){
+                test = false;
+                break;
+            }
+        }
+        
+        if(test){
+            for(auto i:omit_coord[row]){
+                check_y[i][table[row][i]] = 1;
+                check_block[3*(row/3)+(i/3)][table[row][i]] = 1;
+            }
+
+            sudoku(row+1);
+
+            // 안 되는 경우 복구1
+            for(auto i:omit_coord[row]){
+                check_y[i][table[row][i]] = 0;
+                check_block[3*(row/3)+(i/3)][table[row][i]] = 0;
+            }
         }
 
-
-    }
+        // 안 되는 경우 복구2
+        for(auto i:omit_coord[row]){
+            table[row][i] = 0;
+        }
+        
+    }while(next_permutation(tmp.begin(), tmp.end()));
 }
 
 int main(){
-    int check[10], table[9][9];
-    vector<vector<int>> candidate(9);
-    vector<vector<int>> omit_coord(9);
+    int check[10];
     for(int i=0;i<9;++i){
         memset(check, 0, sizeof(check));
         for(int j=0;j<9;++j){
-            cin >> table[i][j];
-            check[table[i][j]] ++;
+            scanf("%d", &table[i][j]);
+            if(table[i][j] != 0){ // 열, 구역별 체크
+                check_y[j][table[i][j]] = 1;
+                check_block[3*(i/3)+(j/3)][table[i][j]] = 1;
+            }
+            check[table[i][j]] = 1;
             if(table[i][j] == 0){
                 omit_coord[i].push_back(j);
             }
@@ -90,7 +103,6 @@ int main(){
         }
     }
 
-    bool finish = false;
-    sudoku(0, table, candidate, omit_coord, finish);
+    sudoku(0);
     return 0;
 }
