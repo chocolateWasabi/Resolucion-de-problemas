@@ -66,3 +66,77 @@ int main(){
     cout << candidate;
     return 0;
 }*/
+
+/*
+// BOJ ID 10773
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main(){
+    stack<int> zerothatout;
+    int k;
+
+    cin >> k;
+    for(int i=1, tmp;i<=k;++i){
+        cin >> tmp;
+        if(tmp != 0){
+            zerothatout.push(tmp);
+        }
+        else{
+            zerothatout.pop();
+        }
+    }
+
+    int sum = 0;
+    for(;!zerothatout.empty();){
+        sum += zerothatout.top();
+        zerothatout.pop();
+    }
+
+    cout << sum;
+}*/
+
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+int main(){
+    //ios_base::sync_with_stdio(false);
+    //cin.tie(NULL);
+
+    string dataset;
+    stack<char> brackets;
+    bool if_balanced;
+    while (true){
+        for(;!brackets.empty();){
+            brackets.pop();
+        }
+        if_balanced = true;
+        getline(cin, dataset);
+    
+        if(!dataset.compare(".")){
+            break;
+        }
+
+        for(char& i:dataset){
+            if(i == '(' || i == '['){
+                brackets.push(i);
+            }
+            else if(i == ')' || i == ']'){
+                if(brackets.empty() || brackets.top() != i){
+                    if_balanced = false;
+                    break;
+                }
+                brackets.pop();
+            }
+            else {
+                // normal character
+            }
+        }
+
+        cout << (if_balanced? "yes\n": "no\n");
+    }
+    return 0;
+}
