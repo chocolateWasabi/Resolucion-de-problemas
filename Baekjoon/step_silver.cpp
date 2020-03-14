@@ -96,3 +96,57 @@ int main(){
 
     cout << sum;
 }*/
+
+// BOJ ID 2004
+// 조합 0의 개수 (예전에 못 풀고 남겨 두었던 것)
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void get_divs(vector<long long>& data, long long n){
+    long long delim = 2000000000;
+    for(long long i=1;i<=delim;i*=n){
+        if(i != 1){
+            data.push_back(i);
+        }
+    }
+}
+
+void check(vector<long long>& data, long long& count, long long now){
+    for(auto i:data){
+        count += (now / i);
+    }
+}
+
+long long min(long long a, long long b){
+    return a < b? a: b;
+}
+
+int main(){
+    long long n, m;
+    cin >> n >> m;
+
+    vector<long long> div2, div5;
+    get_divs(div2, 2);
+    get_divs(div5, 5);
+
+    long long cnt2, cnt5;
+    cnt2 = cnt5 = 0;
+    
+    long long a2, b2, c2, a5, b5, c5;
+    a2 = b2 = c2 = a5 = b5 = c5 = 0;
+
+    check(div2, a2, n);
+    check(div2, b2, m);
+    check(div2, c2, n-m);
+    check(div5, a5, n);
+    check(div5, b5, m);
+    check(div5, c5, n-m);
+
+    long long r2, r5;
+    r2 = a2 - (b2 + c2);
+    r5 = a5 - (b5 + c5);
+
+    cout << min(r2, r5);
+    return 0;
+}
