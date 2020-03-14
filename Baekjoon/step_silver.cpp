@@ -97,6 +97,7 @@ int main(){
     cout << sum;
 }*/
 
+/*
 // BOJ ID 2004
 // 조합 0의 개수 (예전에 못 풀고 남겨 두었던 것)
 #include <iostream>
@@ -148,5 +149,58 @@ int main(){
     r5 = a5 - (b5 + c5);
 
     cout << min(r2, r5);
+    return 0;
+}
+*/
+
+// BOJ ID 2981
+#include <iostream>
+#include <set>
+using namespace std;
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    long long tmp;
+    set<long long > dat, dat2;
+    for(int i=1;i<=n;++i){
+        cin >> tmp;
+        dat.insert(tmp);
+    }
+
+    long long prev = 0;
+    for(auto i:dat){
+        if(prev != 0){
+            dat2.insert(i - prev);
+        }
+        prev = i;
+    }
+    
+    long long crit = *(dat2.begin());
+    bool flag;
+    set<long long> candidate;
+    for(long long i=2;i*i<=crit;++i){
+        if(crit % i == 0){
+            candidate.insert(i);
+            candidate.insert(crit / i);
+        }
+    }
+    candidate.insert(crit);
+    for(auto i:candidate){
+        flag = true;
+        for(auto j:dat2){
+            if(j % i != 0){
+                flag = false;
+                break;
+            }
+        }
+        if(flag){
+            cout << i << ' ';
+        }
+    }
     return 0;
 }
