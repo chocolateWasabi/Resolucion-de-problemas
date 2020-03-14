@@ -152,7 +152,7 @@ int main(){
     return 0;
 }
 */
-
+/*
 // BOJ ID 2981
 #include <iostream>
 #include <set>
@@ -200,6 +200,129 @@ int main(){
         }
         if(flag){
             cout << i << ' ';
+        }
+    }
+    return 0;
+}
+*/
+/*
+// BOJ ID 2164
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main(){
+    int n;
+
+    cin >> n;
+    queue<int> model;
+    for(int i=1;i<=n;++i){
+        model.push(i);
+    }
+    int tmp;
+    for(;model.size() != 1;){
+        model.pop();
+        tmp = model.front();
+        model.pop();
+        model.push(tmp);
+    }
+    cout << model.front();
+    return 0;
+}
+*/
+
+/*
+// BOJ ID 11866
+#include <iostream>
+using namespace std;
+
+int eliminated[100010];
+int main(){
+    int n, k;
+    cin >> n >> k;
+
+    int check = 0;
+    cout << '<';
+    bool if_first = true;
+    for(int i = 1, kk = 0;check != n;){
+        if(!eliminated[i]){
+            ++ kk;
+
+            if(kk == k){
+                eliminated[i] = 1;
+                if(if_first){
+                    cout << i;
+                    if_first = false;
+                }
+                else {
+                    cout << ", " << i;
+                }
+                kk = 0;
+                check ++;
+            }
+        }
+        ++ i;
+        if(i > n){
+            i = 1;
+        }
+    }
+    cout << '>';
+    return 0;
+}
+*/
+
+// BOJ ID 1966
+#include <iostream>
+#include <queue>
+#include <utility>
+#include <cstring>
+using namespace std;
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int T;
+    cin >> T;
+    
+    int n, m;    
+    queue<pair<int, int>> dat;
+    int check[10];
+    for(int t=1;t<=T;++t){
+        for(;!dat.empty();dat.pop());
+        memset(check, 0, sizeof(check));
+
+        cin >> n >> m;
+        for(int i=0, tmp;i<n;++i){
+            cin >> tmp;
+            dat.push(make_pair(i, tmp));
+            check[tmp] ++;
+        }
+
+        int time_count = 0;
+        bool flag1, flag2;
+        while (true) {
+            flag1 = true;
+            for(int i=dat.front().second+1;i<10;++i){
+                if(check[i] > 0){
+                    flag1 = false;
+                    break;
+                }
+            }
+            pair<int, int> fr = dat.front();
+            dat.pop();
+            if(!flag1){
+                dat.push(fr);
+            }
+            else {
+                time_count ++;
+                check[fr.second] --;
+
+                if(fr.first == m){
+                    cout << time_count << '\n';
+                    break;
+                }
+            }
         }
     }
     return 0;
