@@ -271,6 +271,7 @@ int main(){
 }
 */
 
+/*
 // BOJ ID 1966
 #include <iostream>
 #include <queue>
@@ -325,5 +326,44 @@ int main(){
             }
         }
     }
+    return 0;
+}*/
+
+// BOJ ID 1629
+// 분할 정복의 분할 정복
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double log2(double x){
+    return log(x) / log(2);
+}
+
+
+long long a, b, c;
+
+long long multiply(long long k2){
+    if(k2 == 1){
+        return a % c;
+    }
+    return (multiply(k2/2) * multiply(k2/2)) % c;
+} // 승수를 분할 정복으로 (분할 정복 1)
+
+int main(){
+    cin >> a >> b >> c;
+    long long ktmp, k, d;
+    long long res = 1, tt;
+    while(b > 0){
+        ktmp = int(log2(double(b))); 
+        k = int(pow(2.0, ktmp));// b보다 작은 가장 큰 2의 승수
+        d = b - k; // b와의 차이.
+
+        tt = multiply(k);
+        res = (res * tt) % c;
+
+        b = d; // 남은 것에 대해 한번 더 해줌.
+    } // 나머지 파트를 또 2의 자승으로 나누는 (분할 정복 2)
+
+    cout << res;
     return 0;
 }
