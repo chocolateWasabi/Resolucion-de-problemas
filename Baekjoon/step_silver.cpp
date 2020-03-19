@@ -329,6 +329,7 @@ int main(){
     return 0;
 }*/
 
+/*
 // BOJ ID 1629
 // 분할 정복의 분할 정복
 #include <iostream>
@@ -365,5 +366,110 @@ int main(){
     } // 나머지 파트를 또 2의 자승으로 나누는 (분할 정복 2)
 
     cout << res;
+    return 0;
+} */
+
+/*
+// BOJ ID 1931 회의실 배정 (Greedy)
+// 종료 시간 기준으로 정렬해서 하나씩 차자작 고르면 되는 문제.
+#include <iostream>
+#include <set>
+#include <utility>
+using namespace std;
+
+int main(){
+    int n;
+    cin >> n;
+    multiset<pair<long long, long long> > timetable;
+    long long s, e;
+    for(int i=1;i<=n;++i){
+        cin >> s >> e;
+        timetable.insert({e, s});
+    }
+
+    pair<long long, long long> prev = {-1, 0};
+    long long count = 0;
+    for(auto i:timetable){
+        if(i.second >= prev.first){
+            count ++;
+            prev = i;
+        }
+    }
+
+    cout << count;
+    return 0;
+}
+*/
+
+/*
+// BOJ ID 11399
+#include <iostream>
+using namespace std;
+
+int p[1010];
+int main(){
+    int n;
+    cin >> n;
+    for(int i=1, tmp;i<=n;++i){
+        cin >> tmp;
+        p[tmp] ++;
+    }
+    long long result = 0;
+    long long count = 0;
+    for(int i=1;i<=1000;++i){
+        for(;p[i]>0;--p[i]){
+            count += i;
+            result += count;
+        }
+    }
+    cout << result;
+    return 0;
+} */
+
+// BOJ ID 1541
+// -가 나오면 그 뒤에 나오는거 쭉 다 빼주고
+// 다음 -가 나올 때까지 위 과정을 반복. (Greedy)
+#include <iostream>
+using namespace std;
+
+int main(){
+    char formula[55];
+    cin >> formula;
+
+    int result = 0;
+    int now = 0;
+    int subres = 0;
+    bool minus_active = false;
+    for(char *c=formula;*c!='\0';c++){
+        if(*c >= '0' && *c <= '9'){
+            now *= 10;
+            now += int(*c - '0');
+        }
+        else if(*c == '+'){
+            subres += now;
+            now = 0;
+        }
+        else if(*c == '-'){
+            subres += now;
+            if(!minus_active){
+                result += subres;
+                minus_active = true;
+            }
+            else {
+                result -= subres;
+            }
+            now = 0;
+            subres = 0;
+        }
+    }
+    subres += now;
+
+    if(minus_active){
+        result -= subres;
+    }
+    else {
+        result += subres;
+    }
+    cout << result;
     return 0;
 }
