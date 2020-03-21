@@ -1,0 +1,31 @@
+(Samsung) SoftWare Expert Academy :: SWEA
+
+<Learn>
+
+- Intermediate :: Data structures
+Day 1 Array : 1204(D2), 1206(D3), 1208(D3)
+Day 2 Array : 1209(D3), 1210(D4), 1211(D4)
+Day 3 String: 1213(D3), 1215(D3), 1216(D3)
+Day 4 Stack : 1217(D3), 1218(D4), 1219(D4)
+Day 5 Stack : 1222(D4), 1223(D4), 1224(D4)
+Day 6 Queue : 1225(D3), 1226(D4), 1227(D4)
+Day 7 List  : 1228(D3), 1229(D3), 1230(D3)
+Day 8 Tree  : 1231(D4), 1233(D4), 1232(D4)
+
+
+- Advanced :: Algorithms, Optimization
+Day 1 : 1240(D3)AC, 1242(D5)AC
+Day 2 : 1245(D5)AC, 1244(D3)AC
+Day 3 : 1248(D5)AC, 1247(D5)
+Day 4 : 1249(D4), 1251(D4)
+Day 5 : 1256(D5), 1257(D6)
+Day 6 : 1258(D4), 1259(D5), 1260(D6)
+Day 7 : 1263(D6), 1264(D6)
+Day 8 : 1265(D5), 1266(D6)
+
+
+- Prep for Level test
+https://swexpertacademy.com/main/capacityTest/main.do
+
+- Professional :: Difficult algorithms
+    (postpone until Intermediate, Advanced finished)
