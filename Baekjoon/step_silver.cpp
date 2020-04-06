@@ -473,7 +473,7 @@ int main(){
     cout << result;
     return 0;
 }*/
-
+/*
 // BOJ ID 1021
 #include <iostream>
 #include <deque>
@@ -516,4 +516,91 @@ int main(){
     }
     cout << cnt;
     return 0;
-}
+} */
+/*
+// BOJ ID 5430
+#include <iostream>
+#include <cstring>
+#include <deque>
+using namespace std;
+
+char cmd[100001];
+deque<int> check;
+char elem[10100001];
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int T;
+    cin >> T;
+    
+    int n;
+    bool flag;
+    int now;
+    bool error;
+    for(int t=1;t<=T;++t){
+        cin >> cmd;
+        check.clear();
+        flag = false;
+        cin >> n;
+        cin >> elem;
+
+        now = 0;
+        for(char *c=elem;*c!='\0';++c){
+            switch(*c){
+            case '[':
+            break;
+            case ',':
+            case ']':
+                if(now != 0){
+                    check.push_back(now);
+                }
+                now = 0;
+            break;
+            default:
+                now = now * 10 + int(*c-'0');
+            }
+        }
+
+        error = false;
+        for(char *c=cmd;*c!='\0' && !error;++c){
+            switch(*c){
+            case 'R':
+                flag = !flag;
+            break;
+            case 'D':
+                if(check.empty()){
+                    error = true;
+                }
+                else{
+                    if(!flag) check.pop_front();
+                    else check.pop_back();
+                }
+            break;
+            }
+        }
+
+        if(error){
+            cout << "error\n";
+        }
+        else {
+            cout << '[';
+            while(!check.empty()){
+                if(!flag){
+                    cout << check.front();
+                    check.pop_front();
+                }
+                else {
+                    cout << check.back();
+                    check.pop_back();
+                }
+                if(!check.empty()){
+                    cout << ',';
+                }
+            }
+            cout << "]\n";
+        }
+    }
+    return 0;
+} */
