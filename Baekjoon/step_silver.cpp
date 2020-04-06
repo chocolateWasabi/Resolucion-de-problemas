@@ -425,7 +425,7 @@ int main(){
     cout << result;
     return 0;
 } */
-
+/*
 // BOJ ID 1541
 // -가 나오면 그 뒤에 나오는거 쭉 다 빼주고
 // 다음 -가 나올 때까지 위 과정을 반복. (Greedy)
@@ -471,5 +471,49 @@ int main(){
         result += subres;
     }
     cout << result;
+    return 0;
+}*/
+
+// BOJ ID 1021
+#include <iostream>
+#include <deque>
+using namespace std;
+
+inline void rotate_left(deque<int>& dat){
+    int tmp = dat.front();
+    dat.pop_front();
+    dat.push_back(tmp);
+}
+
+inline void rotate_right(deque<int>& dat){
+    int tmp = dat.back();
+    dat.pop_back();
+    dat.push_front(tmp);
+} // 사용 x
+
+int min(int a, int b){
+    return a < b? a: b;
+}
+
+int main(){
+    deque<int> dat;
+    int n, m;
+    cin >> n >> m;
+    for(int i=1;i<=n;++i){
+        dat.push_back(i);
+    }
+    int cnt = 0, cnt_now;
+    for(int i=1, now;i<=m;++i){
+        cin >> now;
+        cnt_now = 0;
+        while(dat.front() != now){
+            rotate_left(dat);
+            cnt_now ++;
+        }
+
+        cnt += min(cnt_now, dat.size()-cnt_now);
+        dat.pop_front();
+    }
+    cout << cnt;
     return 0;
 }
