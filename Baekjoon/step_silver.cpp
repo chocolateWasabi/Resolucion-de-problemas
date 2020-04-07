@@ -604,3 +604,127 @@ int main(){
     }
     return 0;
 } */
+
+/*
+// BOJ ID 2667
+#include <iostream>
+#include <queue>
+#include <utility>
+#include <set>
+using namespace std;
+
+int n;
+char map[30][30];
+int check[30][30];
+
+int dx[] = {0, +1, 0, -1};
+int dy[] = {+1, 0, -1, 0};
+
+//int result[400];
+multiset<int> result;
+
+void bfs(int x, int y, int count){
+    queue<pair<int, int> > next;
+
+    next.push({x, y});
+    pair<int, int> now;
+    check[x][y] = count;
+
+    int this_count = 0;
+    while(!next.empty()){
+        now = next.front();
+        next.pop();
+        this_count ++;
+        for(int i=0;i<4;++i){
+            if(now.first+dx[i]>=0 && now.first+dx[i]<n && now.second+dy[i]>=0 && now.second+dy[i]<n && map[now.first+dx[i]][now.second+dy[i]] == '1' && !check[now.first+dx[i]][now.second+dy[i]]){
+                next.push({now.first+dx[i], now.second+dy[i]});
+                check[now.first+dx[i]][now.second+dy[i]] = count;
+            }
+        }
+    }
+
+    result.insert(this_count);
+}
+
+int main(){
+    cin >> n;
+    for(int i=0;i<n;++i){
+        cin >> map[i];
+    }
+
+    int count = 0;
+    for(int i=0;i<n;++i){
+        for(int j=0;j<n;++j){
+            if(map[i][j] == '1' && !check[i][j]){
+                bfs(i, j, ++count);
+            }
+        }
+    }
+
+    cout << count << endl;
+    for(auto i:result){
+        cout << i << endl;
+    }
+    return 0;
+} */
+
+// BOJ ID 1012
+#include <iostream>
+#include <queue>
+#include <utility>
+#include <cstring>
+using namespace std;
+
+int m, n;
+int farm[60][60];
+int dx[] = {+1, 0, -1, 0};
+int dy[] = {0, +1, 0, -1};
+void worm(int x, int y){
+    queue<pair<int, int> > next;
+    pair<int, int> now;
+
+    next.push({x, y});
+    farm[x][y] = 2;
+    while(!next.empty()){
+        now = next.front();
+        next.pop();
+        for(int i=0;i<4;++i){
+            if(now.first+dx[i]>=0 && now.first+dx[i]<m && now.second+dy[i]>=0 && now.second+dy[i]<n && farm[now.first+dx[i]][now.second+dy[i]] == 1){
+                next.push({now.first+dx[i], now.second+dy[i]});
+                farm[now.first+dx[i]][now.second+dy[i]] = 2;
+            }
+        }
+    }
+}
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int T;
+    cin >> T;
+    int k, x, y;
+    int count;
+    for(int t=1;t<=T;++t){
+        cin >> m >> n;
+        memset(farm, 0, sizeof(farm));
+        cin >> k;
+        for(int i=1;i<=k;++i){
+            cin >> x >> y;
+            farm[x][y] = 1;
+        }
+
+        count = 0;
+        for(int i=0;i<m;++i){
+            for(int j=0;j<n;++j){
+                if(farm[i][j] == 1){
+                    worm(i, j);
+                    ++ count;
+                }
+            }
+        }
+
+        cout << count << '\n';
+    }
+    return 0;
+}
