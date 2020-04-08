@@ -803,46 +803,50 @@ inline bool in_range(int a, int s){
     return a >=0 && a < s? true: false;
 }
 
-int box[1010][1010];
-const int dx[] = {0, +1, 0, -1};
-const int dy[] = {+1, 0, -1, 0};
+int box[110][110][110];
+const int dx[] = {0, 0, 0, +1, 0, -1};
+const int dy[] = {0, 0, +1, 0, -1, 0};
+const int dz[] = {+1, -1, 0, 0, 0, 0};
 
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int m, n;
-    cin >> m >> n;
+    int m, n, h;
+    cin >> m >> n >> h;
 
-    queue<pair<int, int> > next;
-    pair<int, int> now;
+    queue<pair<pair<int, int>, int> > next;
+    pair<pair<int, int>, int> now;
 
-    for(int i=0;i<n;++i){
-        for(int j=0;j<m;++j){
-            cin >> box[i][j];
-            if(box[i][j] == 1){
-                next.push({i, j});
+    for(int k=0;k<h;++k){
+        for(int i=0;i<n;++i){
+            for(int j=0;j<m;++j){
+                cin >> box[i][j][k];
+                if(box[i][j][k] == 1){
+                    next.push({{i, j}, k});
+                }
             }
         }
     }
 
-    if(next.size() == m * n){
+    if(next.size() == m * n * h){
         cout << 0;
         return 0;
     }
 
-    int next_x, next_y;
+    int next_x, next_y, next_h;
     while(!next.empty()){
         now = next.front();
         next.pop();
 
-        for(int i=0;i<4;++i){
-            next_x = now.first + dx[i];
-            next_y = now.second + dy[i];
+        for(int i=0;i<6;++i){
+            next_x = now.first.first + dx[i];
+            next_y = now.first.second + dy[i];
+            next_h = now.second + dz[i];
 
-            if(in_range(next_x, n) && in_range(next_y, m) && !box[next_x][next_y]){
-                box[next_x][next_y] = box[now.first][now.second] + 1;
-                next.push({next_x, next_y});
+            if(in_range(next_x, n) && in_range(next_y, m) && in_range(next_h, h) && !box[next_x][next_y][next_h]){
+                box[next_x][next_y][next_h] = box[now.first.first][now.first.second][now.second] + 1;
+                next.push({{next_x, next_y}, next_h});
             }
         }
     }
@@ -851,10 +855,12 @@ int main(){
     bool impossible = false;
     for(int i=0;i<n && !impossible;++i){
         for(int j=0;j<m;++j){
-            day = box[i][j] > day? box[i][j]: day;
-            if(!box[i][j]){
-                impossible = true;
-                break;
+            for(int k=0;k<h;++k){
+                day = box[i][j][k] > day? box[i][j][k]: day;
+                if(!box[i][j][k]){
+                    impossible = true;
+                    break;
+                }
             }
         }
     }
