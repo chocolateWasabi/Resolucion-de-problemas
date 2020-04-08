@@ -668,6 +668,7 @@ int main(){
     return 0;
 } */
 
+/*
 // BOJ ID 1012
 #include <iostream>
 #include <queue>
@@ -726,5 +727,138 @@ int main(){
 
         cout << count << '\n';
     }
+    return 0;
+} */
+
+/*
+// BOJ ID 2178
+// BFS로 최단 경로 찾기 (가중치 x, goal state 있음)
+#include <iostream>
+#include <queue>
+#include <utility>
+#include <cstring>
+using namespace std;
+
+inline int in_scale(int a, int s){
+    return a>=0 && a<s? 1: 0;
+}
+
+int main(){
+    int n, m;
+    char maze[101][101];
+    int check[101][101];
+    int dx[] = {0, +1, 0, -1};
+    int dy[] = {+1, 0, -1, 0};
+
+    memset(check, 0, sizeof(check));
+    cin >> n >> m;
+    for(int i=0;i<n;++i){
+        cin >> maze[i];
+    }
+
+    queue<pair<int, int> > next;
+    pair<int, int> now;
+
+    next.push({0, 0});
+    check[0][0] = 1;
+    int next_x, next_y;
+
+    bool end_flag = false;
+    while(!next.empty() && !end_flag){
+        now = next.front();
+        next.pop();
+        for(int i=0;i<4;++i){
+            next_x = now.first + dx[i];
+            next_y = now.second + dy[i];
+
+            if(in_scale(next_x, n) && in_scale(next_y, m) && maze[next_x][next_y] == '1' && !check[next_x][next_y]){
+                next.push({next_x, next_y});
+                check[next_x][next_y] = check[now.first][now.second] + 1;
+
+                if(next_x == n-1 && next_y == m-1){
+                    end_flag = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    for(int i=0;i<n;++i){
+        for(int j=0;j<m;++j){
+            cout << check[i][j];
+        }
+        cout << endl;
+    }
+    cout << check[n-1][m-1];
+    return 0;
+} */
+
+// BOJ ID 7576
+#include <iostream>
+#include <queue>
+#include <utility>
+using namespace std;
+
+inline bool in_range(int a, int s){
+    return a >=0 && a < s? true: false;
+}
+
+int box[1010][1010];
+const int dx[] = {0, +1, 0, -1};
+const int dy[] = {+1, 0, -1, 0};
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int m, n;
+    cin >> m >> n;
+
+    queue<pair<int, int> > next;
+    pair<int, int> now;
+
+    for(int i=0;i<n;++i){
+        for(int j=0;j<m;++j){
+            cin >> box[i][j];
+            if(box[i][j] == 1){
+                next.push({i, j});
+            }
+        }
+    }
+
+    if(next.size() == m * n){
+        cout << 0;
+        return 0;
+    }
+
+    int next_x, next_y;
+    while(!next.empty()){
+        now = next.front();
+        next.pop();
+
+        for(int i=0;i<4;++i){
+            next_x = now.first + dx[i];
+            next_y = now.second + dy[i];
+
+            if(in_range(next_x, n) && in_range(next_y, m) && !box[next_x][next_y]){
+                box[next_x][next_y] = box[now.first][now.second] + 1;
+                next.push({next_x, next_y});
+            }
+        }
+    }
+
+    int day = 0;
+    bool impossible = false;
+    for(int i=0;i<n && !impossible;++i){
+        for(int j=0;j<m;++j){
+            day = box[i][j] > day? box[i][j]: day;
+            if(!box[i][j]){
+                impossible = true;
+                break;
+            }
+        }
+    }
+
+    cout << (impossible? -1: day - 1);
     return 0;
 }
