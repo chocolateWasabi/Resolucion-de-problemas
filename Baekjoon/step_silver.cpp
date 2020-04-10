@@ -792,7 +792,7 @@ int main(){
     cout << check[n-1][m-1];
     return 0;
 } */
-
+/*
 // BOJ ID 7576
 #include <iostream>
 #include <queue>
@@ -866,5 +866,49 @@ int main(){
     }
 
     cout << (impossible? -1: day - 1);
+    return 0;
+} */
+
+// BOJ ID 1697
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int check[100001];
+int main(){
+    int n, k;
+    cin >> n >> k;
+    check[n] = 1;
+    // 다 돌려도 탐색 공간이 10만 * log2(10만) = 160만 정도
+
+    queue<int> next;
+    next.push(n);
+
+    int now;
+    while(!next.empty()){
+        now = next.front();
+        next.pop();
+        
+        if(now == k){
+            break;
+        }
+
+        if(now-1 >=0 && !check[now-1]){
+            check[now-1] = check[now] + 1;
+            next.push(now-1);
+        }
+        if(now+1 <= 100000 && !check[now+1]){
+            check[now+1] = check[now] + 1;
+            next.push(now+1);
+        }
+        if(2*now <= 100000 && !check[2*now]){
+            check[2*now] = check[now] + 1;
+            next.push(2*now);
+        }
+    }
+    while(!next.empty()){
+        next.pop();
+    }
+    cout << check[k] - 1;
     return 0;
 }
