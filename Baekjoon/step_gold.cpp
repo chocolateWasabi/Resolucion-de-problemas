@@ -78,3 +78,114 @@ int main(){
     cout << current_max;
     return 0;
 }*/
+
+// BOJ ID 2206
+#include <iostream>
+#include <queue>
+#include <utility>
+#include <cstring>
+using namespace std;
+
+char mapp[1001][1001];
+int check[1001][1001][2]; // 0 layer = not break , 1 layer = break
+
+bool in_range(int x, int c){
+    return x >= 0 && x < c? true: false;
+}
+
+const int dx[] = {0, +1, 0, -1};
+const int dy[] = {-1, 0, +1, 0};
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, m;
+    cin >> n >> m;
+    for(int i=0;i<n;++i){
+        cin >> mapp[i];
+    }
+
+    queue<pair<pair<int, int>, bool> > next; // (x, y), break
+    pair<pair<int, int>, int> now;
+    
+    next.push({{0, 0}, false});
+    check[0][0][0] = check[0][0][1] = 1;
+    int next_x, next_y;
+    int next2_x, next2_y;
+    while(!next.empty()){
+        now = next.front();
+        next.pop();/*
+        if(now.first.first == n-1 && now.first.second == m-1){
+            break;
+        }*/
+
+        for(int i=0;i<4;++i){
+            next_x = now.first.first+dx[i];
+            next_y = now.first.second+dy[i];
+            if(in_range(next_x, n) && in_range(next_y, m) && !check[next_x][next_y][0]){
+                if(mapp[next_x][next_y] == '0'){ // normal case
+                    if(now.second && check[next_x][next_y][1]){
+                        if(check[now.first.first][now.first.second][now.second] + 1 >= check[next_x][next_y][1]){
+                            continue;
+                        }
+                    }
+                    next.push({{next_x, next_y}, now.second});
+                    check[next_x][next_y][now.second] = check[now.first.first][now.first.second][now.second] + 1;
+                }
+                else if(mapp[next_x][next_y] == '1' && !now.second){ // break wall
+                    
+                    for(int j=0;j<4;++j){
+                        next2_x = next_x + dx[j];
+                        next2_y = next_y + dy[j];
+                        if(in_range(next2_x, n) && in_range(next2_y, m) && !check[next2_x][next2_y][0] && mapp[next2_x][next2_y] == '0'){
+                            if(!check[next2_x][next2_y][1] || check[next2_x][next2_y][1] && check[now.first.first][now.first.second][0] + 2 < check[next2_x][next2_y][1]){
+                                next.push({{next2_x, next2_y}, 1});
+                                check[next_x][next_y][1] = check[now.first.first][now.first.second][0] + 1;
+                                check[next2_x][next2_y][1] = check[now.first.first][now.first.second][0] + 2;
+                            }
+                        }
+                    }
+
+                }
+                else { // error
+                }
+            }
+        }
+    }
+    while(!next.empty()){
+        next.pop();
+    }
+
+    if(check[n-1][m-1][0]){
+        if(check[n-1][m-1][1]){
+            cout << min(check[n-1][m-1][0], check[n-1][m-1][1]);
+        }
+        else {
+            cout << check[n-1][m-1][0];
+        }
+    }
+    else {
+        if(check[n-1][m-1][1]){
+            cout << check[n-1][m-1][1];
+        }
+        else {
+            cout << -1;
+        }
+    }
+
+/*    for(int i=0;i<n;++i){
+        for(int j=0;j<m;++j){
+            cout << check[i][j][0] << ' ';
+        }
+        cout << endl;
+    }
+
+    for(int i=0;i<n;++i){
+        for(int j=0;j<m;++j){
+            cout << check[i][j][1] << ' ';
+        }
+        cout << endl;
+    }*/
+    return 0;
+}
