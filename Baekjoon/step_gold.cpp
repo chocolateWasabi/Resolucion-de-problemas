@@ -79,6 +79,7 @@ int main(){
     return 0;
 }*/
 
+/*
 // BOJ ID 2206
 #include <iostream>
 #include <queue>
@@ -115,10 +116,10 @@ int main(){
     int next2_x, next2_y;
     while(!next.empty()){
         now = next.front();
-        next.pop();/*
-        if(now.first.first == n-1 && now.first.second == m-1){
-            break;
-        }*/
+        next.pop();
+        //if(now.first.first == n-1 && now.first.second == m-1){
+        //    break;
+        //}
 
         for(int i=0;i<4;++i){
             next_x = now.first.first+dx[i];
@@ -174,7 +175,7 @@ int main(){
         }
     }
 
-/*    for(int i=0;i<n;++i){
+    for(int i=0;i<n;++i){
         for(int j=0;j<m;++j){
             cout << check[i][j][0] << ' ';
         }
@@ -186,6 +187,7 @@ int main(){
             cout << check[i][j][1] << ' ';
         }
         cout << endl;
-    }*/
+    }
     return 0;
-}
+}*/
+

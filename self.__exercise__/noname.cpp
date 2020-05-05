@@ -1,6 +1,21 @@
-#include <cstdio> // skku mcsl lab intern tryout
+#include <cstdio>
+#include <cstdlib>
+
 int main(){
-    auto func = [](int n){return (n & -n) == n ? 1 : 0;};
-    for(int n;~scanf("%d", &n);printf("%d\n",func(n)?1:0));
+
+    int *a = (int*) malloc(sizeof(int) * 1);
+    int *b = (int*) malloc(sizeof(int) * 1);
+
+    *a = 20;
+    *b = 30;
+    
+    printf("%d %d\n", *a, *b);
+
+    *a ^= *b;
+    *b ^= *a;
+    *a ^= *b;
+
+    printf("%d %d\n", *a, *b);
+    free(a); free(b);
     return 0;
 }
