@@ -7,14 +7,15 @@
 // 하/우 움직임만 있었으면 DP 문제, 상/하/좌/우 움직임이 가능하기 때문에 Dijkstra
 // 그렇지만 지금의 TLE 가 나는 코드를 수정할 방법을 생각해보자. 
 #include <iostream>
-#include <queue>
+//#include <queue>
 #include <utility>
 #include <cstring>
+#include <set>
 using namespace std;
 
 int n;
 char mymap[101][101];
-priority_queue<pair<int, pair<int, int> > > wheretogo;
+set<pair<int, pair<int, int> > > wheretogo;
 int cost[101][101];
 const int dx[] = {+1, 0, -1, 0};
 const int dy[] = {0, +1, 0, -1};
@@ -54,10 +55,11 @@ int main(){
         }
         cost[0][0] = 0;
 
-        // clear priority_queue
-        while(!wheretogo.empty()){
+        // clear set
+        /*while(!wheretogo.empty()){
             wheretogo.pop();
-        }
+        }*/
+        wheretogo.clear();
 
         // data input
         cin >> n;
@@ -65,18 +67,24 @@ int main(){
             cin >> mymap[i];
         }
 
-        // first push to queue
-        wheretogo.push({0, {0, 0}});
+        // first insert to queue
+        wheretogo.insert({0, {0, 0}});
         pair<int, pair<int, int> > now;
         int now_x, now_y, next_x, next_y;
 
         while(!wheretogo.empty()){
             // get minimum value
-            now = wheretogo.top();
-            wheretogo.pop();
+            //now = wheretogo.top();
+            //wheretogo.pop();
+            now = *wheretogo.begin();
+            wheretogo.erase(now);
             now_x = now.second.first;
             now_y = now.second.second;
-            cost[now_x][now_y] = now.first;
+            //cost[now_x][now_y] = now.first;
+
+            if(cost[now_x][now_y] < now.first){
+                continue;
+            }
 
             // search four directions
             for(int i=0;i<4;++i){
@@ -85,7 +93,7 @@ int main(){
 
                 if(in_range(next_x, n) && in_range(next_y, n)){
                     if(cost[now_x][now_y] + c2i(mymap[next_x][next_y]) < cost[next_x][next_y]){
-                        wheretogo.push({cost[now_x][now_y] + c2i(mymap[next_x][next_y]), {next_x, next_y}});
+                        wheretogo.insert({cost[now_x][now_y] + c2i(mymap[next_x][next_y]), {next_x, next_y}});
                         cost[next_x][next_y] = cost[now_x][now_y] + c2i(mymap[next_x][next_y]);
                     }
                 }
