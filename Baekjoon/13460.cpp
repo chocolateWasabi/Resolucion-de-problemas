@@ -87,6 +87,17 @@ inline void leanProcess(int dir, pair<int, int>& nowState, pair<int, int>& newSt
     }
 }
 
+void printBoard(int leanCount) {
+    cout << "leanCount: " << leanCount << '\n';
+    for(int i=0;i<n;++i){
+        for(int j=0;j<m;++j){
+            cout << board[i][j];
+        }
+        cout << '\n';
+    }
+    cout << '\n';
+}
+
 void beadEscape() {
     int minLean = 11;
     beadState.push(initState);
@@ -106,6 +117,8 @@ void beadEscape() {
         board[prevState.red.first][prevState.red.second] = board[prevState.blue.first][prevState.blue.second] = '.';
         board[nowState.red.first][nowState.red.second] = 'R';
         board[nowState.blue.first][nowState.blue.second] = 'B';
+
+        //printBoard(nowState.leanCount);
 
         if(nowState.red.first == nowState.blue.first) { // 같은 행에 있는 경우
             if(nowState.red.second < nowState.blue.second) { // 우측 기울임 시 blue부터, 좌측(-) 기울임 시 red부터 
@@ -143,13 +156,14 @@ void beadEscape() {
                 leanProcess(i, nowState.red, newState.red, 'R', findGoal);
             }
 
-            if(!findGoal) {
-                // 원 상태로 복귀
-                board[newState.red.first][newState.red.second] = '.';
-                board[nowState.red.first][nowState.red.second] = 'R';
-                board[newState.blue.first][newState.blue.second] = '.';
-                board[nowState.blue.first][nowState.blue.second] = 'B';
+            
+            // 원 상태로 복귀
+            board[newState.red.first][newState.red.second] = '.';
+            board[nowState.red.first][nowState.red.second] = 'R';
+            board[newState.blue.first][newState.blue.second] = '.';
+            board[nowState.blue.first][nowState.blue.second] = 'B';
 
+            if(!findGoal) {
                 // push
                 if(!visited[newState.red.first][newState.red.second][newState.blue.first][newState.blue.second]){
                     newState.leanCount = nowState.leanCount + 1;
@@ -164,6 +178,9 @@ void beadEscape() {
                 }
                 else { // 실패 케이스 - 소각 (do nothing)
                 }
+
+                // 원 상태로 복귀
+                board[goal.first][goal.second] = 'O';
             }
         }
 
