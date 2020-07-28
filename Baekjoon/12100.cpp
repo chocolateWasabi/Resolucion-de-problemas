@@ -15,7 +15,7 @@ public:
 
 typedef class {
 public:
-    dataType board[25][25];
+    dataType board[20][20];
     int convergeCount;
 } gameBoard;
 
@@ -27,16 +27,16 @@ queue<gameBoard> twoZeroFourEight;
 void printBoard(gameBoard);
 
 bool isIdentical(gameBoard& a, gameBoard& b) { // 최적화 하는 부분 (for Hard)
-    /*
+    
     bool full, updown, leftright;
     full = updown = leftright = true;
     for(int i=0;i<n;++i) {
         for(int j=0;j<n;++j) {
             // 완전히 같은 경우에 대한 체크
-            if(a.board[i][j] != b.board[i][j]) {
+            if(a.board[i][j].data != b.board[i][j].data) {
                 full = false;
             }
-
+/*
             // 상하 대칭인 경우에 대한 체크
             if(a.board[i][j] != b.board[n-i-1][j]) {
                 updown = false;
@@ -45,11 +45,12 @@ bool isIdentical(gameBoard& a, gameBoard& b) { // 최적화 하는 부분 (for H
             // 좌우 대칭인 경우에 대한 체크
             if(a.board[i][j] != b.board[i][n-j-1]) {
                 leftright = false;
-            }
+            }*/
         }
     }
     
-    return (full || updown || leftright);*/
+    //return (full || updown || leftright);
+    //return full;
     //printBoard(b);
 
     for(int i=0;i<n;++i) {
@@ -58,7 +59,7 @@ bool isIdentical(gameBoard& a, gameBoard& b) { // 최적화 하는 부분 (for H
         }
     }
 
-    return false;
+    return full;
 }
 
 const int dx[] = {0, 0, -1, +1};
@@ -79,6 +80,14 @@ void printBoard(gameBoard temp) {
     }
 }
 
+inline int min(int a, int b) {
+    return a < b? a: b;
+}
+
+inline int max(int a, int b) {
+    return a > b? a: b;
+}
+
 void play2048() {
     // BFS pruning
     gameBoard nowBoard, tempBoard;
@@ -88,7 +97,7 @@ void play2048() {
         nowBoard = twoZeroFourEight.front();
         twoZeroFourEight.pop();
 
-        if(nowBoard.convergeCount >= 5) {
+        if(nowBoard.convergeCount >= 10) {
             continue;
         }
 
@@ -107,7 +116,7 @@ void play2048() {
                             tempBoard.board[i][pos-k].data = 0;
                             tempBoard.board[i][pos-k].label = false;
                         }
-                        j=n; continue;
+                        j=min(n, j+2); continue;
                     }
                 }
                 if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i][j-1].data
@@ -140,7 +149,7 @@ void play2048() {
                             tempBoard.board[i][pos+k].data = 0;
                             tempBoard.board[i][pos+k].label = false;
                         }
-                        j=-1; continue;
+                        j=max(-1, j-2); continue;
                     }
                 }
                 if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i][j+1].data
@@ -172,7 +181,7 @@ void play2048() {
                             tempBoard.board[pos+k][j].data = 0;
                             tempBoard.board[pos+k][j].label = false;
                         }
-                        i=-1; continue;
+                        i=max(-1, i-2); continue;
                     }
                 }  
                 if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i+1][j].data
@@ -204,7 +213,7 @@ void play2048() {
                             tempBoard.board[pos-k][j].data = 0;
                             tempBoard.board[pos-k][j].label = false;
                         }
-                        i=n; continue;  
+                        i=min(n, i+2); continue;  
                     }
                 }
                 if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i-1][j].data
