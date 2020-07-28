@@ -1,3 +1,4 @@
+// 2048 게임 (삼성 기출)
 #include <iostream>
 #include <cmath>
 #include <queue>
@@ -5,9 +6,16 @@
 using namespace std;
 
 typedef char byte;
+
 typedef class {
 public:
-    byte board[25][25];
+    byte data;
+    bool label;
+} dataType;
+
+typedef class {
+public:
+    dataType board[25][25];
     int convergeCount;
 } gameBoard;
 
@@ -16,7 +24,9 @@ bool findBlock[21];
 gameBoard initBoard;
 queue<gameBoard> twoZeroFourEight;
 
-bool isIdentical(gameBoard& a, gameBoard& b) {
+void printBoard(gameBoard);
+
+bool isIdentical(gameBoard& a, gameBoard& b) { // 최적화 하는 부분 (for Hard)
     /*
     bool full, updown, leftright;
     full = updown = leftright = true;
@@ -40,7 +50,33 @@ bool isIdentical(gameBoard& a, gameBoard& b) {
     }
     
     return (full || updown || leftright);*/
+    //printBoard(b);
+
+    for(int i=0;i<n;++i) {
+        for(int j=0;j<n; ++j) {
+            b.board[i][j].label = false;
+        }
+    }
+
     return false;
+}
+
+const int dx[] = {0, 0, -1, +1};
+const int dy[] = {-1, +1, 0, 0};
+
+void printBoard(gameBoard temp) {
+    if(temp.convergeCount <= 3) {
+        cout << '\n' << "convergeCount: " << temp.convergeCount << '\n';
+        for(int i=0;i<n;++i) {
+            for(int j=0;j<n;++j) {
+                if(temp.board[i][j].label){
+                    cout << '\'';
+                }
+                cout << int(temp.board[i][j].data) << ' ';
+            }
+            cout << '\n';
+        }
+    }
 }
 
 void play2048() {
@@ -62,16 +98,27 @@ void play2048() {
         memcpy(tempBoard.board, nowBoard.board, sizeof(nowBoard.board));
         for(int i=0;i<n;++i) {
             for(int j=n-1;j>=1;--j) {
-                if(tempBoard.board[i][j] != 0 && tempBoard.board[i][j] == tempBoard.board[i][j-1]) {
-                    tempBoard.board[i][j] ++;
-                    tempBoard.board[i][j-1] = 0;
-                    findBlock[tempBoard.board[i][j]] = true;
-                }
-                if(tempBoard.board[i][j] == 0) { // 0이면 당겨오기
-                    for(int k=j-1;k>=0;--k) {
-                        tempBoard.board[i][k + 1] = tempBoard.board[i][k];
+                if(tempBoard.board[i][j].data == 0) { // 0이면 당겨오기 - 다시 작성함
+                    int pos = j;
+                    for(;pos >= 0 && tempBoard.board[i][pos].data == 0;--pos);
+                    if(pos >= 0) {
+                        for(int k=0;k<=pos;++k) {
+                            tempBoard.board[i][j-k] = tempBoard.board[i][pos-k];
+                            tempBoard.board[i][pos-k].data = 0;
+                            tempBoard.board[i][pos-k].label = false;
+                        }
+                        j=n; continue;
                     }
-                    tempBoard.board[i][0] = 0;
+                }
+                if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i][j-1].data
+                    && !(tempBoard.board[i][j].label || tempBoard.board[i][j-1].label)) {
+                    tempBoard.board[i][j].data ++;
+                    tempBoard.board[i][j].label = true;
+
+                    tempBoard.board[i][j-1].data = 0;
+                    tempBoard.board[i][j-1].label = false;
+                    
+                    findBlock[tempBoard.board[i][j].data] = true;
                 }
             }
         }
@@ -83,16 +130,27 @@ void play2048() {
         memcpy(tempBoard.board, nowBoard.board, sizeof(nowBoard.board));
         for(int i=0;i<n;++i) {
             for(int j=0;j<n-1;++j) {
-                if(tempBoard.board[i][j] != 0 && tempBoard.board[i][j] == tempBoard.board[i][j+1]) {
-                    tempBoard.board[i][j] ++;
-                    tempBoard.board[i][j+1] = 0;
-                    findBlock[tempBoard.board[i][j]] = true;
-                }
-                if(tempBoard.board[i][j] == 0) {
-                    for(int k=j+1;k<=n-1;++k) {
-                        tempBoard.board[i][k - 1] = tempBoard.board[i][k];
+                if(tempBoard.board[i][j].data == 0) {
+                    int pos = j;
+                    for(;pos < n && tempBoard.board[i][pos].data == 0;++pos);
+
+                    if(pos < n) {
+                        for(int k=0;k<n-pos;++k) {
+                            tempBoard.board[i][j+k] = tempBoard.board[i][pos+k];
+                            tempBoard.board[i][pos+k].data = 0;
+                            tempBoard.board[i][pos+k].label = false;
+                        }
+                        j=-1; continue;
                     }
-                    tempBoard.board[i][n - 1] = 0;
+                }
+                if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i][j+1].data
+                    && !(tempBoard.board[i][j].label || tempBoard.board[i][j+1].label)) {
+                    tempBoard.board[i][j].data ++;
+                    tempBoard.board[i][j].label = true;
+
+                    tempBoard.board[i][j+1].data = 0;
+                    tempBoard.board[i][j+1].label = false;
+                    findBlock[tempBoard.board[i][j].data] = true;
                 }
             }
         }
@@ -104,17 +162,28 @@ void play2048() {
         memcpy(tempBoard.board, nowBoard.board, sizeof(nowBoard.board));
         for(int j=0;j<n;++j) {
             for(int i=0;i<n-1;++i) {
-                if(tempBoard.board[i][j] != 0 && tempBoard.board[i][j] == tempBoard.board[i+1][j]) {
-                    tempBoard.board[i][j] ++;
-                    tempBoard.board[i+1][j] = 0;
-                    findBlock[tempBoard.board[i][j]] = true;
-                }
-                if(tempBoard.board[i][j] == 0) {
-                    for(int k=i+1;k<=n-1;++k) {
-                        tempBoard.board[k - 1][j] = tempBoard.board[k][j];
+                if(tempBoard.board[i][j].data == 0) {
+                    int pos = i;
+                    for(;pos < n && tempBoard.board[pos][j].data == 0;++pos);
+
+                    if(pos < n) {
+                        for(int k=0;k<n-pos;++k) {
+                            tempBoard.board[i+k][j] = tempBoard.board[pos+k][j];
+                            tempBoard.board[pos+k][j].data = 0;
+                            tempBoard.board[pos+k][j].label = false;
+                        }
+                        i=-1; continue;
                     }
-                    tempBoard.board[n - 1][j] = 0;
                 }  
+                if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i+1][j].data
+                    && !(tempBoard.board[i][j].label || tempBoard.board[i+1][j].label)) {
+                    tempBoard.board[i][j].data ++;
+                    tempBoard.board[i][j].label = true;
+
+                    tempBoard.board[i+1][j].data = 0;
+                    tempBoard.board[i+1][j].label = false;
+                    findBlock[tempBoard.board[i][j].data] = true;
+                }
             }
         }
         if(!isIdentical(nowBoard, tempBoard)) {
@@ -125,16 +194,27 @@ void play2048() {
         memcpy(tempBoard.board, nowBoard.board, sizeof(nowBoard.board));
         for(int j=0;j<n;++j) {
             for(int i=n-1;i>=1;--i) {
-                if(tempBoard.board[i][j] != 0 && tempBoard.board[i][j] == tempBoard.board[i-1][j]) {
-                    tempBoard.board[i][j] ++;
-                    tempBoard.board[i-1][j] = 0;
-                    findBlock[tempBoard.board[i][j]] = true;
-                }
-                if(tempBoard.board[i][j] == 0) {
-                    for(int k=i-1;k>=0;--k) {
-                        tempBoard.board[k + 1][j] = tempBoard.board[k][j];
+                if(tempBoard.board[i][j].data == 0) {
+                    int pos = i;
+                    for(;pos >= 0 && tempBoard.board[pos][j].data == 0;--pos);
+
+                    if(pos >= 0) {
+                        for(int k=0;k<=pos;++k) {
+                            tempBoard.board[i-k][j] = tempBoard.board[pos-k][j];
+                            tempBoard.board[pos-k][j].data = 0;
+                            tempBoard.board[pos-k][j].label = false;
+                        }
+                        i=n; continue;  
                     }
-                    tempBoard.board[0][j] = 0;
+                }
+                if(tempBoard.board[i][j].data != 0 && tempBoard.board[i][j].data == tempBoard.board[i-1][j].data
+                    && !(tempBoard.board[i][j].label || tempBoard.board[i-1][j].label)) {
+                    tempBoard.board[i][j].data ++;
+                    tempBoard.board[i][j].label = true;
+
+                    tempBoard.board[i-1][j].data = 0;
+                    tempBoard.board[i-1][j].label = false;
+                    findBlock[tempBoard.board[i][j].data] = true;
                 }
             }
         }
@@ -142,6 +222,9 @@ void play2048() {
             twoZeroFourEight.push(tempBoard);
         }
         
+        /*if(findBlock[5]){
+            cout << nowBoard.convergeCount;
+        }*/
     }
 
     // 결과 출력
@@ -166,7 +249,8 @@ int main(){
             if(temp != 0){
                 temp = int(log2(double(temp)));
             }
-            initBoard.board[i][j] = temp;
+            initBoard.board[i][j].data = temp;
+            initBoard.board[i][j].label = false;
             findBlock[temp] = true;
         }
     }
