@@ -55,6 +55,7 @@ int findRoute() {
     int nextCount, next_x, next_y;
 
     int minCount = 11111;
+    // 초기값 최초에 너무 작게 잡아서 WA 뜸
     while(!hedgehog.empty()) {
         now = hedgehog.front().first;
         nowCount = hedgehog.front().second;

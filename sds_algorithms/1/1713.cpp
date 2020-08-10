@@ -15,7 +15,7 @@ int main() {
         student[stu][0] ++;
 
         // checking process
-
+        
     }
 
     return 0;
