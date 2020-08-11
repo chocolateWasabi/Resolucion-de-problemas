@@ -3,8 +3,8 @@ using namespace std;
 
 #define maxima 100001
 
-long long n, s;
-long long series[maxima][2];
+int n, s;
+int series[maxima][2];
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -25,6 +25,10 @@ int main() {
         } else if(series[right][1] - series[left][1] < s) {
             ++ right;
         } else {
+            if(right - left < min_length) {
+                min_length = right - left;
+                //++ right;
+            }
             ++ left;
         }
     }
