@@ -72,20 +72,27 @@ public:
         TrieInstance *now = root;
         for(int i=0;i<len;++i) {
             if(!(now->isExistChild(word[i]))) {
-                return false;
+                return 0;
+            } else {
+                now = now->getChild(word[i]);
             }
         }
         //return true;
-        int res = 0;
+        int res = 1;
         if(now->lastLetter) {
             if(!(now->isHit)) {
-                res |= 2;
-            } else { 
+                // 아직 찾은 적이 없는 단어인 경우
+                res |= 4; 
                 now->isHit = true;
             }
-            res |= 1;
+            res |= 2;
         } 
         return res;
+        // 리턴 값 정리: (bit index)
+        // 0 - 아예 더 갈 수 없음
+        // 1 - 더 갈 수는 있음
+        // 2 - last letter
+        // 4 - 이미 hit 한 last letter
         // 중간에서 끝나면 결국 없는 단어랑 같다. (주의!!!)
     }
     void flagClear() {
@@ -108,7 +115,7 @@ const int dx[] = {0, 0, +1, +1, +1, -1, -1, -1};
 const int dy[] = {-1, +1, -1, 0, +1, -1, 0, +1};
 
 bool inRange(int x, int y) {
-    return x >= 0 && x <= 4 && y >= 0 && y <= 4;
+    return x >= 0 && x < 4 && y >= 0 && y < 4;
 }
 
 void memclear(int (*target)[5], int size) {
@@ -145,27 +152,32 @@ void stringCopy(char *src, int len) {
     maxLengthWord[len] = '\0';
 }
 
+void update(char *word, int len, int res) {
+    if(res & 2) {
+        if(res & 4) { // hit
+            // for test - s
+            //word[len] = '\0';
+            //cout << word << ' ';
+            // for test - e
+
+            if(len > maxLength) {
+                stringCopy(word, len);
+                maxLength = len;
+            } else if(len == maxLength) {
+                if(lexicographicalOrder(word, maxLengthWord, len)) {
+                    stringCopy(word, len);
+                }
+            } else {}
+            score += scoreBoard[len];
+            wordCount ++;
+        }
+    }
+}
+
 
 void findWord(int x, int y, int len, char* word) { // dfs 탐색 구현
     if(len >= 8) {
         return;
-    }
-
-    // word checking
-    int res = Dict.isExistWord(word, len);
-    if(!(res & 2) && (res & 1)) { // hit
-        if(len > maxLength) {
-            stringCopy(word, len);
-            maxLength = len;
-            score += scoreBoard[len];
-            wordCount ++;
-        } else if(len == maxLength) {
-            if(lexicographicalOrder(word, maxLengthWord, len)) {
-                stringCopy(word, len);
-            }
-            score += scoreBoard[len];
-            wordCount ++;
-        } else {}
     }
 
     // find next
@@ -173,14 +185,19 @@ void findWord(int x, int y, int len, char* word) { // dfs 탐색 구현
     for(int dir=0;dir<8;++dir) {
         next_x = x + dx[dir];
         next_y = y + dy[dir];
-        // 트라이에 존재하지 않으면 진입 못하는 코드 추가해야 함
+
         if( inRange(next_x, next_y) && !visit[next_x][next_y]) {
             word[len] = boggle[next_x][next_y];
             word[len+1] = '\0';
             visit[next_x][next_y] = 1;
-            findWord(next_x, next_y, len+1, word);
+
+            int res = Dict.isExistWord(word, len+1);
+            update(word, len+1, res);
+            if(res & 1) {
+                findWord(next_x, next_y, len+1, word);
+            }
             visit[next_x][next_y] = 0;
-            word[len] = '\0';
+            word[len+1] = '\0';
         }
     }
 }
@@ -206,11 +223,20 @@ int main() {
 
         score = maxLength = wordCount = 0;
         maxLengthWord[0] = '\0';
-        memclear(visit, sizeof(visit)/sizeof(int));
+        //memclear(visit, sizeof(visit)/sizeof(int));
         for(int i=0;i<4;++i) {
             for(int j=0;j<4;++j) {
+                word[0] = boggle[i][j];
+                word[1] = '\0';
+
+                int res = Dict.isExistWord(word, 1);
+                update(word, 1, res);
+                if(res & 1) {
+                    memclear(visit, sizeof(visit)/sizeof(int));
+                    visit[i][j] = 1;
+                    findWord(i, j, 1, word);
+                }
                 word[0] = '\0';
-                findWord(i, j, 0, word);
             }
         }
 
