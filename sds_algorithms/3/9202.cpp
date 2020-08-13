@@ -18,7 +18,7 @@ public:
         return letter;
     }
     bool isExistChild(char letter) {
-        if(childNode[letter] == nullptr) {
+        if(childNode[int(letter-'A')] == nullptr) {
             return false;
         } else {
             return true;
@@ -61,6 +61,7 @@ public:
                 now = now->getChild(*c);
             } else {
                 now->addChild(*c);
+                now = now->getChild(*c);
             }
             if(*(c+1) == '\0') {
                 now->lastLetter = true;
@@ -172,6 +173,7 @@ void findWord(int x, int y, int len, char* word) { // dfs 탐색 구현
     for(int dir=0;dir<8;++dir) {
         next_x = x + dx[dir];
         next_y = y + dy[dir];
+        // 트라이에 존재하지 않으면 진입 못하는 코드 추가해야 함
         if( inRange(next_x, next_y) && !visit[next_x][next_y]) {
             word[len] = boggle[next_x][next_y];
             word[len+1] = '\0';
