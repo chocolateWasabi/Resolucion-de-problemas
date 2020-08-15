@@ -3,6 +3,8 @@
 using namespace std;
 
 vector<int> primes;
+
+// 400만 짜리 배열 잡고, 에라토스테네스의 채 적용하기 (가장 빠르다고 함)
 void makePrimes() {
     bool isPrime;
     primes.clear();

@@ -8,7 +8,7 @@ public:
 } eGCDtype;
 
 eGCDtype extendedEuclid(int a, int b) {
-    int s[2], t[2], r[2];
+    int s[2], t[2], r[2];   
     s[0] = t[1] = 1;
     s[1] = t[0] = 0;
     r[0] = a, r[1] = b;
