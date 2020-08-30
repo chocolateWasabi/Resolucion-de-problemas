@@ -175,6 +175,7 @@ int main() {
 }*/
 
 // BOJ ID 5639
+/*
 #include <iostream>
 using namespace std;
 
@@ -247,4 +248,55 @@ int main() {
     postfix(root);
     cout << root->key;
     return 0;
+}*/
+
+// BOJ ID 15654, 15655, 15656, 15657, 15664, 15665, 15666
+/*
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <set>
+using namespace std;
+
+int n, m;
+vector<int> nums, series;
+int visit[10];
+set<vector<int> > redundant;
+
+void comb(int level) {
+    if(level == m) {
+        redundant.insert(series);
+        return;
+    }
+    for(int i=0;i<n;++i) {
+        //if(!visit[i]) {// && 
+            if(level == 0 || nums[i] >= series[level-1]) {
+                visit[i] = 1;
+                series.push_back(nums[i]);
+                comb(level + 1);
+                series.pop_back();
+                visit[i] = 0;
+            }
+        //}
+    }
 }
+
+int main() {
+    //ios_base::sync_with_stdio(false);
+    //cin.tie(NULL);
+
+    cin >> n >> m;
+    for(int i=0, t;i<n;++i) {
+        cin >> t;
+        nums.push_back(t);
+    }
+    sort(nums.begin(), nums.end());
+    comb(0);
+    for(auto i:redundant) {
+        for(auto j:i) {
+            cout << j << ' ';
+        }
+        cout << '\n';
+    }
+    return 0;
+}*/
