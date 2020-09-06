@@ -378,3 +378,216 @@ int main() {
     }
     return 0;
 }*/
+
+// BOJ ID 1406
+/*
+#include <iostream>
+#include <string>
+using namespace std;
+
+class DLList {
+public:
+    DLList *left, *right;
+    char c;
+    DLList() {
+        this->left = this->right = nullptr;
+        c = '\0';
+    }
+};
+
+DLList *head, *tail;
+
+auto print = []() {
+    for(DLList *ptr = head->right;ptr != tail;ptr=ptr->right) {
+        cout << ptr->c;
+    }
+    //cout << '\n';
+};
+
+string str;
+void makeStrList() {
+    DLList *ptr = head;
+    
+    for(auto c:str) {
+        DLList *tmp = new DLList;
+        tmp->c = c;
+        tmp->left = ptr;
+        tmp->right = tail;
+        tail->left = tmp;
+        ptr->right = tmp;
+        ptr = ptr->right;
+    }
+
+    //print();
+}
+
+int main() {
+    //ios_base::sync_with_stdio(false);
+    //cin.tie(NULL);
+
+    head = new DLList;
+    tail = new DLList;
+    head->right = tail;
+    head->c = '(';
+    tail->left = head;
+    tail->c = ')';
+
+    getline(cin, str);
+    makeStrList();
+    int m;
+    string tmp;
+    getline(cin, tmp);
+    m = stoi(tmp);
+
+    DLList *ptr = tail;
+    string op;
+    for(int i=0;i<m;++i) {
+        getline(cin, op);
+        if(op == "L"){
+            if(ptr->left != head) {
+                ptr = ptr->left;
+            }
+        } else if(op == "D") {
+            if(ptr->right != nullptr) {
+                ptr = ptr->right;
+            }
+        } else if(op == "B") {
+            if(ptr->left != head) {
+                DLList *tmp = ptr->left;
+                ptr->left = ptr->left->left;
+                ptr->left->right = ptr;
+                delete tmp;
+            }
+        } else {
+            DLList *tmp = new DLList;
+            tmp->c = op[op.find(' ')+1];
+            tmp->left = ptr->left;
+            tmp->right = ptr;
+            ptr->left->right = tmp;
+            ptr->left = tmp;
+        }
+        //print();
+    }
+    print();
+    return 0;
+}*/
+
+// BOJ ID 10867
+/*
+#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    set<int> dataset;
+    cin >> n;
+    for(int t;n>0;--n) {
+        cin >> t;
+        dataset.insert(t);
+    }
+
+    for(auto i:dataset) {
+        cout << i << ' ';
+    }
+    return 0;
+}*/
+
+// BOJ ID 6603
+/*
+#include <iostream>
+#include <vector>
+#include <cstring>
+using namespace std;
+
+void makeCase(vector<int>& lotto, int level, int visit[], vector<int>& res) {
+    if(level == 6) {
+        for(auto i:res) {
+            cout << lotto[i] << ' ';
+        }
+        cout << '\n';
+        return;
+    }
+    for(int i=!level?0:res.back();i<=lotto.size()-6+level;++i) {
+        if(!visit[i]) {
+            res.push_back(i);
+            visit[i] = 1;
+            makeCase(lotto, level+1, visit, res);
+            visit[i] = 0;
+            res.pop_back();
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    vector<int> lotto, res;
+    int visit[15];
+    while(true) {
+        cin >> n;
+        if(!n) {
+            break;
+        }
+        lotto.clear();
+        memset(visit, 0, sizeof(visit));
+        for(int i=0, t;i<n;++i) {
+            cin >> t;
+            lotto.push_back(t);
+        }
+        makeCase(lotto, 0, visit, res);
+        cout << '\n';
+    }
+
+    return 0;
+}*/
+
+// BOD ID 1182 - WA (부분수열의 정의가 연속된 숫자만을 나타내는게 아니라고 함)
+/*
+#include <iostream>
+using namespace std;
+
+int n, s;
+int dat[21][2];
+
+int main() {
+    cin >> n >> s;
+    for(int i=1;i<=n;++i) {
+        cin >> dat[i][0];
+        dat[i][1] = dat[i][0] + dat[i-1][1];
+    }
+    int count = 0;
+    for(int i=n;i>=1;--i) {
+        for(int j=i;j<=n;++j) {
+            if(dat[j][1] - dat[j-i][1] == s) {
+                count++;
+            }
+        }
+    }
+    cout << count;
+    return 0;
+}*/
+
+// BOJ ID 9095
+#include <iostream>
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T;
+    int summ[15] = {0, 1, 2, 4};
+    for(int i=4;i<=11;++i) {
+        summ[i] = summ[i-1] + summ[i-2] + summ[i-3];
+    }
+
+    for(int t=1, tt;t<=T;++t) {
+        cin >> tt;
+        cout << summ[tt] << endl;
+    }
+    return 0;
+}
