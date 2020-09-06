@@ -300,3 +300,81 @@ int main() {
     }
     return 0;
 }*/
+
+// BOJ ID 18917
+/*
+#include <iostream>
+#include <map>
+using namespace std;
+
+map<int, int> countt;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int m;
+    cin >> m;
+    int op, opnd;
+    countt[0] ++;
+    long long summ, xorr;
+    summ = xorr = 0;
+    for(;m>0;--m) {
+        cin >> op;
+        switch(op) {
+        case 1:
+            cin >> opnd;
+            countt[opnd] ++;
+            summ += opnd;
+            xorr ^= opnd;
+            break;
+        case 2:
+            cin >> opnd;
+            countt[opnd] --;
+            summ -= opnd;
+            xorr ^= opnd;
+            break;
+        case 3:
+            cout << summ << '\n';
+            break;
+        case 4:
+            cout << xorr << '\n';
+            break;
+        default:
+            break;
+        }
+    }
+    return 0;
+}*/
+
+// BOJ ID 10815
+/*
+#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    set<int> sanggeun;
+
+    cin >> n;
+    for(int t;n>0;--n) {
+        cin >> t;
+        sanggeun.insert(t);
+    }
+
+    int m;
+    cin >> m;
+    for(int t;m>0;--m) {
+        cin >> t;
+        if(sanggeun.find(t) == sanggeun.end()) {
+            cout << 0 << ' ';
+        } else {
+            cout << 1 << ' ';
+        }
+    }
+    return 0;
+}*/
