@@ -1,0 +1,56 @@
+
+# BOJ 10830 - 행렬 제곱
+
+n = b = 0
+matrix = []
+answer = []
+
+def powMatrix():
+    global matrix
+
+    new_matrix = []
+    for i in range(n):
+        new_matrix.append([])
+        for k in range(n):
+            new_matrix[i].append(0)
+            for j in range(n):
+                new_matrix[i][k] = (new_matrix[i][k] + (matrix[i][j] * matrix[j][k]) % 1000) % 1000
+    matrix = new_matrix
+
+def multiplyMatrix():
+    global answer
+
+    new_answer = []
+    for i in range(n):
+        new_answer.append([])
+        for k in range(n):
+            new_answer[i].append(0)
+            for j in range(n):
+                new_answer[i][k] = (new_answer[i][k] + (matrix[i][j] * answer[j][k]) % 1000) % 1000
+    answer = new_answer
+
+def printAnswer():
+    for i in range(n):
+        for j in range(n):
+            print(answer[i][j], end=' ')
+        print()
+
+if __name__ == '__main__':
+    n, b = map(int, input().split())
+    for i in range(n):
+        line = list(map(int, input().split()))
+        matrix.append(line)
+        answer.append([])
+        for j in range(n): # answer 처음에는 항등 행렬로 시작
+            if i == j:
+                answer[i].append(1)
+            else:
+                answer[i].append(0)
+
+    while b > 0:
+        if (b & 1) == 1:
+            multiplyMatrix()
+        b = (b >> 1)
+        powMatrix()
+
+    printAnswer()
