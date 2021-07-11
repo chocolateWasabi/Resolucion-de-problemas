@@ -4,3 +4,7 @@
 /job-recruit-coding-test
 /Baekjoon_bfr139
 /PsPy/.idea
+JPS/.idea
+JPS/out
+*.class
+JPS/JPS.iml
